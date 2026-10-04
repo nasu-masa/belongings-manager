@@ -1,0 +1,7 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+
+RUN npm ci
