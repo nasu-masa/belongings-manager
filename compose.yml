@@ -57,6 +57,6 @@ services:
     depends_on:
       - backend
 
-    volumes:
-      db-data:
-      frontend-node-modules:
+volumes:
+  db-data:
+  frontend-node-modules:
