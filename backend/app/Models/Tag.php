@@ -14,18 +14,18 @@ class Tag extends Model
     use HasFactory;
 
     /**
-     * @return BelongsToMany<Item, $this>
-     */
-    public function items(): BelongsToMany
-    {
-        return $this->belongsToMany(Item::class);
-    }
-
-    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsToMany<Item, $this>
+     */
+    public function items(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class);
     }
 }

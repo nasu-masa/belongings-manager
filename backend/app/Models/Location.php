@@ -14,6 +14,14 @@ class Location extends Model
     use HasFactory;
 
     /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * @return BelongsToMany<Item, $this, ItemLocation>
      */
     public function items(): BelongsToMany
@@ -22,13 +30,5 @@ class Location extends Model
             ->using(ItemLocation::class)
             ->withPivot('id', 'quantity')
             ->withTimestamps();
-    }
-
-    /**
-     * @return BelongsTo<User, $this>
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }
