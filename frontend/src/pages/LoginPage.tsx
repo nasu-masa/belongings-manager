@@ -1,48 +1,158 @@
 import { useState } from 'react';
-import api from '../lib/axios';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { loginUser, type LoginInput } from '../lib/auth';
+import setValidationErrors from '../lib/formValidation';
+import { useAuth } from '../hooks/useAuth';
+
+const inputClass =
+  'block w-full rounded-md border border-stone-300 bg-white px-3 py-2.5 text-base text-stone-900 placeholder:text-stone-400 transition-colors focus:border-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 aria-[invalid=true]:border-red-400 aria-[invalid=true]:focus:ring-red-400/20';
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = async () => {
-    await api.get("/sanctum/csrf-cookie");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const successMessage = (location.state as { message?: string } | null)
+    ?.message;
+  const { refreshUser } = useAuth();
 
-    await api.post("/login", {
-      email,
-      password,
-    });
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginInput>();
 
-    const response = await api.get("/api/user");
-    console.log(response.data);
+  const onSubmit: SubmitHandler<LoginInput> = async (data) => {
+    setErrorMessage('');
+
+    try {
+      await loginUser(data);
+      const user = await refreshUser();
+
+      navigate(user?.email_verified_at ? '/' : '/verify-email', {
+        replace: true,
+      });
+    } catch (error) {
+      const handled = setValidationErrors(error, setError, [
+        'email',
+        'password',
+      ]);
+
+      if (!handled) {
+        setErrorMessage('ログインに失敗しました。');
+      }
+    }
   };
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      handleLogin();
-    }}
-    >
-      <label htmlFor="email">メールアドレス</label>
-      <input
-        id="email"
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+    <div className="min-h-screen bg-stone-50 text-stone-800">
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-2xl border border-stone-100 bg-white p-8 shadow-sm">
+          <h1 className="mt-1 mb-8 text-2xl font-bold tracking-tight text-stone-900">
+            ログイン
+          </h1>
+          {successMessage && (
+            <p
+              className="mb-5 whitespace-pre-line rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700"
+              role="status"
+            >
+              {successMessage}
+            </p>
+          )}
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <div className="mb-5">
+              <label
+                className="mb-2 block text-sm font-medium text-stone-700"
+                htmlFor="email"
+              >
+                メールアドレス
+              </label>
+              <input
+                className={inputClass}
+                type="email"
+                id="email"
+                aria-invalid={errors.email ? 'true' : 'false'}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+                {...register('email', {
+                  required: 'メールアドレスを入力してください',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'メールアドレス形式で入力してください',
+                  },
+                })}
+              />
+              {errors.email && (
+                <p
+                  className="mt-1.5 text-sm text-red-600"
+                  id="email-error"
+                  role="alert"
+                >
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
-      <label htmlFor="password">パスワード</label>
-      <input
-        id="password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            <div>
+              <label
+                className="mb-2 block text-sm font-medium text-stone-700"
+                htmlFor="password"
+              >
+                パスワード
+              </label>
+              <input
+                className={inputClass}
+                type="password"
+                id="password"
+                aria-invalid={errors.password ? 'true' : 'false'}
+                aria-describedby={
+                  errors.password ? 'password-error' : undefined
+                }
+                {...register('password', {
+                  required: 'パスワードを入力してください',
+                })}
+              />
+              {errors.password && (
+                <p
+                  className="mt-1.5 text-sm text-red-600"
+                  id="password-error"
+                  role="alert"
+                >
+                  {errors.password.message}
+                </p>
+              )}
+              <div className="mt-2 text-right">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-emerald-700 hover:text-emerald-800 hover:underline"
+                >
+                  パスワードをお忘れの方 URL(/forgot-password)入れてね
+                </Link>
+              </div>
+            </div>
 
-      <button type="submit">ログイン</button>
+            <button
+              className="mt-2 block w-full rounded-md bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700/40 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'ログイン中...' : 'ログイン'}
+            </button>
 
-    </form>
-  )
+            {errorMessage && (
+              <p
+                className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+                role="alert"
+              >
+                {errorMessage}
+              </p>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default LoginPage;
