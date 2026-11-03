@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import './index.css';
 import ItemsPage from './pages/ItemsPage';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     Component: LoginPage,
+  },
+  {
+    path: '/register',
+    Component: RegisterPage,
   },
 ]);
 

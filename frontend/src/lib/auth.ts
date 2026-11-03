@@ -1,5 +1,17 @@
 import api from '../lib/axios';
 
+export type RegisterInput = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+export const registerUser = async (input: RegisterInput): Promise<void> => {
+  await api.get('/sanctum/csrf-cookie');
+  await api.post('/register', input);
+};
+
 export type LoginInput = {
   email: string;
   password: string;
