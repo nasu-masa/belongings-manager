@@ -7,6 +7,7 @@ import ItemsPage from './pages/ItemsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import VerifiedRoute from './components/auth/VerifiedRoute';
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     Component: RegisterPage,
+  },
+  {
+    path: '/forgot-password',
+    Component: ForgotPasswordPage,
   },
   // ログインが必要 (メール未認証でも可)
   {
