@@ -91,7 +91,7 @@ function VerifyEmailPage() {
             target="_blank"
             rel="noreferrer"
           >
-            開発用メールボックスを開く (MailHog)
+            開発用メールボックスを開く (Mailpit)
           </a>
         )}
       </div>
