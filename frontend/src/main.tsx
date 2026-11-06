@@ -11,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import GuestRoute from './components/auth/GuestRoute';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import VerifiedRoute from './components/auth/VerifiedRoute';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 const router = createBrowserRouter([
   // 未ログイン時のみ
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: '/login', Component: LoginPage },
       { path: '/register', Component: RegisterPage },
       { path: '/forgot-password', Component: ForgotPasswordPage },
+      { path: 'reset-password', Component: ResetPasswordPage },
     ],
   },
   // ログインが必要 (メール未認証でも可)

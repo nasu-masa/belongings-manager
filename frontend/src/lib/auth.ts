@@ -52,3 +52,16 @@ export const forgotPassword = async (
 ): Promise<void> => {
   await api.post('/forgot-password', input);
 };
+
+export type ResetPasswordInput = {
+  token: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+export const resetPassword = async (
+  input: ResetPasswordInput,
+): Promise<void> => {
+  await api.post('/reset-password', input);
+};
