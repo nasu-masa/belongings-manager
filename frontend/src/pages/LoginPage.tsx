@@ -124,7 +124,7 @@ function LoginPage() {
                   to="/forgot-password"
                   className="text-sm text-emerald-700 hover:text-emerald-800 hover:underline"
                 >
-                  パスワードをお忘れの方 URL(/forgot-password)入れてね
+                  パスワードをお忘れの方
                 </Link>
               </div>
             </div>
