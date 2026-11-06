@@ -8,21 +8,19 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import GuestRoute from './components/auth/GuestRoute';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import VerifiedRoute from './components/auth/VerifiedRoute';
 
 const router = createBrowserRouter([
+  // 未ログイン時のみ
   {
-    path: '/login',
-    Component: LoginPage,
-  },
-  {
-    path: '/register',
-    Component: RegisterPage,
-  },
-  {
-    path: '/forgot-password',
-    Component: ForgotPasswordPage,
+    Component: GuestRoute,
+    children: [
+      { path: '/login', Component: LoginPage },
+      { path: '/register', Component: RegisterPage },
+      { path: '/forgot-password', Component: ForgotPasswordPage },
+    ],
   },
   // ログインが必要 (メール未認証でも可)
   {

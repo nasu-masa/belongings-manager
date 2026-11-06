@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { loginUser, type LoginInput } from '../lib/auth';
 import setValidationErrors from '../lib/formValidation';
@@ -11,7 +11,6 @@ const inputClass =
 function LoginPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
-  const navigate = useNavigate();
   const location = useLocation();
   const successMessage = (location.state as { message?: string } | null)
     ?.message;
@@ -29,11 +28,9 @@ function LoginPage() {
 
     try {
       await loginUser(data);
-      const user = await refreshUser();
-
-      navigate(user?.email_verified_at ? '/' : '/verify-email', {
-        replace: true,
-      });
+      // background: GuestRoute がローディング表示に切り替わりフォームが外れるのを防ぐ
+      // ログイン後のリダイレクトは user の更新を受けて GuestRoute が行う
+      await refreshUser({ background: true });
     } catch (error) {
       const handled = setValidationErrors(error, setError, [
         'email',

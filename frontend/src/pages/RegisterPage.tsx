@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { registerUser, type RegisterInput } from '../lib/auth';
@@ -11,7 +10,6 @@ const inputClass =
 function RegisterPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
-  const navigate = useNavigate();
   const { refreshUser } = useAuth();
 
   const {
@@ -29,9 +27,9 @@ function RegisterPage() {
 
     try {
       await registerUser(data);
-      await refreshUser();
-
-      navigate('/verify-email', { replace: true });
+      // background: GuestRoute がローディング表示に切り替わりフォームが外れるのを防ぐ
+      // 登録後のリダイレクトは user の更新を受けて GuestRoute が行う
+      await refreshUser({ background: true });
     } catch (error) {
       const handled = setValidationErrors(error, setError, [
         'name',
