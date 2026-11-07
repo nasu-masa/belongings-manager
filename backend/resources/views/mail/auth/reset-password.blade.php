@@ -7,13 +7,9 @@
 
 以下のボタンをクリックして、パスワードをリセットしてください。
 
-<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:24px 0;">
-<tr>
-<td align="center">
-<a href="{{ $resetUrl }}" style="display:inline-block;background-color:#15803d;color:#ffffff;font-family:system-ui,'Segoe UI',Roboto,sans-serif;font-size:15px;font-weight:500;text-decoration:none;border-radius:6px;padding:12px 28px;">パスワードをリセットする</a>
-</td>
-</tr>
-</table>
+<x-mail::button :url="$resetUrl" color="primary">
+パスワードをリセットする
+</x-mail::button>
 
 このリンクの有効期限は {{ $expire }} 分です。
 
